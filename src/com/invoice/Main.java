@@ -9,24 +9,8 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 public class Main {
 public static void main(String [] args) throws JsonProcessingException {
 	List<Invoice> invoice = new ArrayList<>();
-	List<InvoiceTarget> invoiceTarget = new ArrayList<>();
-	
-	for(Invoice src : invoice) {
-		InvoiceTarget target= new InvoiceTarget();
-		target.setInvNumber(src.getInvoiceNumber());
-		target.setCreateDate(src.getDate());
-		target.setDueDate(src.getDueDate());
-		target.setBillingName(src.getBillingTo().getName());
-		target.setBillingAddress(src.getBillingTo().getAddress());
-		target.setBillingCity(src.getBillingTo().getCity());
-		target.setBillingState(src.getBillingTo().getState());
-		target.setBillingZip(src.getBillingTo().getZip());
-		
-
-	}
 	
 	
-
 	BillingInfo billing1 = new BillingInfo();
 	billing1.setName("John Doe");
 	billing1.setAddress("123 Main Street");
@@ -82,9 +66,40 @@ public static void main(String [] args) throws JsonProcessingException {
 	invoice.add(invoice1);
 	invoice.add(invoice2);
 	
+	List<InvoiceTarget> invoiceTarget = new ArrayList<>();
+	
+	for(Invoice src : invoice) {
+		InvoiceTarget target= new InvoiceTarget();
+		target.setInvNumber(src.getInvoiceNumber());
+		target.setCreateDate(src.getDate());
+		target.setDueDate(src.getDueDate());
+		target.setBillingName(src.getBillingTo().getName());
+		target.setBillingAddress(src.getBillingTo().getAddress());
+		target.setBillingCity(src.getBillingTo().getCity());
+		target.setBillingState(src.getBillingTo().getState());
+		target.setBillingZip(src.getBillingTo().getZip());
+		
+		int total = 0;
+		List<ItemTarget> itemTarget = new ArrayList<>();
+		for(Item item : src.getItems()) {
+			ItemTarget targetItem = new ItemTarget();
+			targetItem.setCode(item.getDescription());
+			targetItem.setQty(item.getQuantity());
+			targetItem.setPrice((int)item.getUnitPrice());
+			int amount = item.getQuantity() *(int)item.getUnitPrice();
+			targetItem.setPrice(amount);
+			total += amount;
+			itemTarget.add(targetItem);
+		}
+		
+		target.setItems(itemTarget);
+		target.setTotalAmount(total);
+		invoiceTarget.add(target);
+	}
+	
 	ObjectMapper mapper = new ObjectMapper();
 	mapper.enable(SerializationFeature.INDENT_OUTPUT);
-	String source= mapper.writeValueAsString(invoice);
+	String source= mapper.writeValueAsString(invoiceTarget);
 	System.out.println(source);
 	
 
