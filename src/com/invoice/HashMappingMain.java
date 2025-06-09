@@ -67,46 +67,45 @@ public class HashMappingMain {
 	invoiceList.add(invoice1);
 	invoiceList.add(invoice2);
 	
-//	
-//	List<Map<String, Object>> invoiceTargetList = new ArrayList<>();
-//	for(Map<String, Object> src : invoiceList) {
-//		Map<String, Object> target = new HashMap<>();
-//		target.put("invNumber",src.get("invoice_number"));
-//		target.put("createDate",src.get("date"));
-//		target.put("dueDate",src.get("due_date"));
-//		
-//		Map<String, Object> billing = (Map<String, Object>) src.get("billingTo");
-//		if(billing != null) {
-//		target.put("billingName",billing.get("name"));
-//		target.put("billingAddress",billing.get("address"));
-//		target.put("billingCity",billing.get("city"));
-//		target.put("billingState",billing.get("state"));
-//		target.put("billingZip",billing.get("zip"));
-//		}
-//		int total = 0;
-//		List<Map<String, Object>> itemTargetList = new ArrayList<>();
-//		List<Map<String, Object>> items = (List<Map<String, Object>>) src.get("items");
-//		for(Map<String, Object> item:items) {
-//			Map<String, Object> targetItem = new HashMap<>();
-//			int quantity =(int) item.get("quantity");
-//			double unitPrice = Double.valueOf(item.get("unitPrice").toString());
-//			targetItem.put("code", item.get("description"));
-//			targetItem.put("qty","quantity");
-//			targetItem.put("price", (int) unitPrice);
-//			int amount = quantity *(int) unitPrice;
-//			targetItem.put("amount", amount);
-//			total += amount;
-//			itemTargetList.add(target);
-//		}
-//		target.put("item", itemTargetList);
-//		target.put("totalAmount", total);
-//		target.put("description", src.get("notes"));
-//		invoiceTargetList.add(target);
-//	}
-//	
-//	
-//	
-//	
+	
+	List<Map<String, Object>> invoiceTargetList = new ArrayList<>();
+	for(Map<String, Object> src : invoiceList) {
+		Map<String, Object> target = new HashMap<>();
+		target.put("invNumber",src.get("invoice_number"));
+		target.put("createDate",src.get("date"));
+		target.put("dueDate",src.get("due_date"));
+		
+		@SuppressWarnings("unchecked")
+		Map<String, Object> billing = (Map<String, Object>) src.get("billingTo");
+		if(billing != null) {
+		target.put("billingName",billing.get("name"));
+		target.put("billingAddress",billing.get("address"));
+		target.put("billingCity",billing.get("city"));
+		target.put("billingState",billing.get("state"));
+		target.put("billingZip",billing.get("zip"));
+		}
+		int total = 0;
+		List<Map<String, Object>> itemTargetList = new ArrayList<>();
+		@SuppressWarnings("unchecked")
+		List<Map<String, Object>> items = (List<Map<String, Object>>) src.get("items");
+		for(Map<String, Object> item : items) {
+			Map<String, Object> targetItem = new HashMap<>();
+			int quantity =(int) item.get("quantity");
+			double unit_price = Double.valueOf(item.get("unit_price").toString());
+			targetItem.put("code", item.get("description"));
+			targetItem.put("qty","quantity");
+			targetItem.put("price", (int) unit_price);
+			int amount = quantity *(int) unit_price;
+			targetItem.put("amount", amount);
+			total += amount;
+			itemTargetList.add(target);
+		}
+		target.put("item", itemTargetList);
+		target.put("totalAmount", total);
+		target.put("description", src.get("notes"));
+		invoiceTargetList.add(target);
+	}
+	
 	
 	ObjectMapper mappersrc = new ObjectMapper();
 	mappersrc.enable(SerializationFeature.INDENT_OUTPUT);
