@@ -1,15 +1,19 @@
 package com.invoice;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.opencsv.CSVWriter;
 
 public class Main {
-	public static void main(String[] args) throws JsonProcessingException {
+	public static void main(String[] args) throws IOException {
 		List<Invoice> invoice = new ArrayList<>();
 
 		BillingInfo billing1 = new BillingInfo();
@@ -102,6 +106,28 @@ public class Main {
 		String target = mappertrg.writeValueAsString(invoiceTarget);
 		System.out.println("\n \n The Target JSON is: " + target);
 
-	}
+		String filePath = "resources//source.csv";
+		File CSVFile = new File(filePath);
+		if (!CSVFile.exists())
+			CSVFile.createNewFile();
 
+		try (CSVWriter writer = new CSVWriter(new FileWriter(CSVFile))) {
+			String[] header = { "invoiceNumber", "Date", "DueDate", "BillingName", "BillingAddress", "BillingCity",
+					"BillingState", "BillingZip", "ItemDescription", "ItemQuantity", "ItemUnitPrice", "Notes" };
+			writer.writeNext(header);
+
+			for (Invoice csv : invoice) {
+				for (Item item : csv.getItems()) {
+					String[] data = { csv.getInvoiceNumber(), csv.getDate(), csv.getDueDate(),
+							csv.getBillingTo().getName(), csv.getBillingTo().getAddress(), csv.getBillingTo().getCity(),
+							csv.getBillingTo().getState(), csv.getBillingTo().getZip(), item.getDescription(),
+							String.valueOf(item.getQuantity()), String.valueOf(item.getUnitPrice()), csv.getNotes() };
+					writer.writeNext(data);
+				}
+			}
+
+			System.out.println("csv file converted successfully" + CSVFile.getAbsolutePath());
+
+		}
+	}
 }
