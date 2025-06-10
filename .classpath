@@ -10,6 +10,13 @@
 	<classpathentry kind="lib" path="C:/Users/DT-BSIT-005/Downloads/jackson-databind-2.1.4.jar"/>
 	<classpathentry kind="lib" path="C:/Users/DT-BSIT-005/Downloads/jackson-annotations-2.15.2.jar"/>
 	<classpathentry kind="lib" path="C:/Users/DT-BSIT-005/Downloads/opencsv-3.8.jar"/>
-	<classpathentry kind="lib" path="C:/Users/DT-BSIT-005/Downloads/poi-ooxml-5.2.5.jar"/>
+	<classpathentry kind="lib" path="C:/Users/DT-BSIT-005/Downloads/commons-compress-1.26.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/DT-BSIT-005/Downloads/poi-5.2.3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/DT-BSIT-005/Downloads/poi-ooxml-5.2.3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/DT-BSIT-005/Downloads/commons-compress-1.18.jar"/>
+	<classpathentry kind="lib" path="C:/Users/DT-BSIT-005/Downloads/commons-collections4-4.4.jar"/>
+	<classpathentry kind="lib" path="C:/Users/DT-BSIT-005/Downloads/xmlbeans-5.1.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/DT-BSIT-005/Downloads/ooxml-schemas-1.4.jar"/>
+	<classpathentry kind="lib" path="C:/Users/DT-BSIT-005/Downloads/curvesapi-1.06.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

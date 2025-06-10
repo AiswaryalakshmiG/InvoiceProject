@@ -1,15 +1,15 @@
 package com.invoice;
 
-import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.opencsv.CSVWriter;
 
 public class Main {
 	public static void main(String[] args) throws IOException {
@@ -105,28 +105,70 @@ public class Main {
 		String target = mappertrg.writeValueAsString(invoiceTarget);
 		System.out.println("\n \n The Target JSON is: " + target);
 
-		String filePath = "resources//source.csv";
-		File CSVFile = new File(filePath);
-		if (!CSVFile.exists())
-			CSVFile.createNewFile();
+//		String filePath = "resources//source.csv";
+//		File CSVFile = new File(filePath);
+//		if (!CSVFile.exists())
+//			CSVFile.createNewFile();
+//
+//		try (CSVWriter writer = new CSVWriter(new FileWriter(CSVFile))) {
+//			String[] header = { "invoiceNumber", "Date", "DueDate", "BillingName", "BillingAddress", "BillingCity",
+//					"BillingState", "BillingZip", "ItemDescription", "ItemQuantity", "ItemUnitPrice", "Notes" };
+//			writer.writeNext(header);
+//
+//			for (Invoice csv : invoice) {
+//				for (Item item : csv.getItems()) {
+//					String[] data = { csv.getInvoiceNumber(), csv.getDate(), csv.getDueDate(),
+//							csv.getBillingTo().getName(), csv.getBillingTo().getAddress(), csv.getBillingTo().getCity(),
+//							csv.getBillingTo().getState(), csv.getBillingTo().getZip(), item.getDescription(),
+//							String.valueOf(item.getQuantity()), String.valueOf(item.getUnitPrice()), csv.getNotes() };
+//					writer.writeNext(data);
+//				}
+//			}
+//
+//			System.out.println("csv file converted successfully" + CSVFile.getAbsolutePath());
+//
+//		}
 
-		try (CSVWriter writer = new CSVWriter(new FileWriter(CSVFile))) {
-			String[] header = { "invoiceNumber", "Date", "DueDate", "BillingName", "BillingAddress", "BillingCity",
-					"BillingState", "BillingZip", "ItemDescription", "ItemQuantity", "ItemUnitPrice", "Notes" };
-			writer.writeNext(header);
+		String excelPath = "resources//source.xlsx";
+		Workbook workbook = new XSSFWorkbook();
+		Sheet sheet = workbook.createSheet("Invoice Data");
 
-			for (Invoice csv : invoice) {
-				for (Item item : csv.getItems()) {
-					String[] data = { csv.getInvoiceNumber(), csv.getDate(), csv.getDueDate(),
-							csv.getBillingTo().getName(), csv.getBillingTo().getAddress(), csv.getBillingTo().getCity(),
-							csv.getBillingTo().getState(), csv.getBillingTo().getZip(), item.getDescription(),
-							String.valueOf(item.getQuantity()), String.valueOf(item.getUnitPrice()), csv.getNotes() };
-					writer.writeNext(data);
-				}
+		String[] header = { "invoiceNumber", "Date", "DueDate", "BillingName", "BillingAddress", "BillingCity",
+				"BillingState", "BillingZip", "ItemDescription", "ItemQuantity", "ItemUnitPrice", "Notes" };
+
+		Row headerRow = sheet.createRow(0);
+		for (int i = 0; i < header.length; i++) {
+			Cell cell = headerRow.createCell(i);
+			cell.setCellValue(header[i]);
+		}
+
+		int rowNum = 1;
+		for (Invoice excel : invoice) {
+			for (Item item : excel.getItems()) {
+				Row row = sheet.createRow(rowNum++);
+				row.createCell(0).setCellValue(excel.getInvoiceNumber());
+				row.createCell(1).setCellValue(excel.getDate());
+				row.createCell(2).setCellValue(excel.getDueDate());
+				row.createCell(3).setCellValue(excel.getBillingTo().getName());
+				row.createCell(4).setCellValue(excel.getBillingTo().getAddress());
+				row.createCell(5).setCellValue(excel.getBillingTo().getCity());
+				row.createCell(6).setCellValue(excel.getBillingTo().getState());
+				row.createCell(7).setCellValue(excel.getBillingTo().getZip());
+				row.createCell(8).setCellValue(item.getDescription());
+				row.createCell(9).setCellValue(item.getQuantity());
+				row.createCell(10).setCellValue(item.getUnitPrice());
+				row.createCell(11).setCellValue(excel.getNotes());
+
 			}
+		}
 
-			System.out.println("csv file converted successfully" + CSVFile.getAbsolutePath());
-
+		for (int i = 0; i < header.length; i++) {
+			sheet.autoSizeColumn(i);
+		}
+		try (FileOutputStream fileOut = new FileOutputStream(excelPath)) {
+			workbook.write(fileOut);
+			workbook.close();
+			System.out.println("Excel file converted successfully" + excelPath);
 		}
 	}
 }
