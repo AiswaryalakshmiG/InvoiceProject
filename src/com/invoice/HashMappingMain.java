@@ -95,11 +95,11 @@ public class HashMappingMain {
 				targetItem.put("amount", amount);
  				itemTargetList.add(targetItem);
 			}
+			
 			int totalAmount = items.stream()
 		            .mapToInt(item -> (int) item.get("quantity") *  Integer.parseInt(item.get("unit_price").toString()))
 		            .sum();
-			
-			target.put("item", itemTargetList);
+			target.put("items", itemTargetList);
 			target.put("totalAmount", totalAmount);
 			target.put("description", src.get("notes"));
 			invoiceTargetList.add(target);
